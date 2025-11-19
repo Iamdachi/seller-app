@@ -7,19 +7,25 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import java.io.File;
 
-/**
- * Connects Spring to Tomcat.
- */
 public class WebAppInitializer {
 
-    public void registerSpringDispatcher(Tomcat tomcat,
-                                         AnnotationConfigWebApplicationContext ctx) throws Exception {
+    public void onStartup(Tomcat tomcat) throws Exception {
 
-        Context root = tomcat.addContext("", new File(".").getAbsolutePath());
+        Context webContext = tomcat.addContext("", new File(".").getAbsolutePath());
 
-        DispatcherServlet servlet = new DispatcherServlet(ctx);
-        Tomcat.addServlet(root, "dispatcher", servlet).setLoadOnStartup(1);
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
+        ctx.scan("com.dachi.sellerapp");   // scan everything under sellerapp
+        ctx.setServletContext(webContext.getServletContext());
+        ctx.refresh();
 
-        root.addServletMappingDecoded("/", "dispatcher");
+        // Optional: log beans to ensure controllers are detected
+        System.out.println("Beans registered in Spring context:");
+        for (String bean : ctx.getBeanDefinitionNames()) {
+            System.out.println(bean);
+        }
+
+        DispatcherServlet dispatcher = new DispatcherServlet(ctx);
+        Tomcat.addServlet(webContext, "dispatcher", dispatcher).setLoadOnStartup(1);
+        webContext.addServletMappingDecoded("/", "dispatcher");
     }
 }

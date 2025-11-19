@@ -9,7 +9,7 @@ public class SpringContextFactory {
 
     public AnnotationConfigWebApplicationContext createWebContext() {
         var ctx = new AnnotationConfigWebApplicationContext();
-        ctx.register(WebAppConfig.class);
+        ctx.register(WebAppInitializer.class);
         return ctx;
     }
 }

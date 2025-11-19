@@ -30,18 +30,24 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    // Constructors
+    @Column(nullable = false)
+    private boolean emailConfirmed;
+
+    @Column(nullable = false)
+    private boolean adminApproved;
+
     public User() {}
 
-    public User(String firstName, String lastName, String password, String email, Role role) {
+    public User(String firstName, String lastName, String password, String email, Role role, boolean adminApproved, boolean emailConfirmed) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
         this.role = role;
+        this.adminApproved = adminApproved;
+        this.emailConfirmed = emailConfirmed;
     }
 
-    // Getters / Setters
     public Long getId() { return id; }
 
     public String getFirstName() { return firstName; }
@@ -60,4 +66,10 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+
+    public boolean getEmailConfirmed() { return emailConfirmed; }
+    public void setEmailConfirmed(boolean emailConfirmed) { this.emailConfirmed = emailConfirmed; }
+
+    public boolean getAdminApproved() { return adminApproved; }
+    public void setAdminApproved(boolean adminApproved) { this.adminApproved = adminApproved; }
 }
