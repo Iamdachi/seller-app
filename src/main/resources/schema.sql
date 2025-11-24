@@ -15,25 +15,15 @@ CREATE TABLE users
 CREATE TABLE comments
 (
     id IDENTITY PRIMARY KEY,
-    message    CLOB      NOT NULL,
-    rating     INT       NOT NULL CHECK (rating >= 0 AND rating <= 10),
-
-    -- NULL allowed → anonymous author
+    message    VARCHAR(255) NOT NULL,
+    rating     INT          NOT NULL,
+    created_at TIMESTAMP    NOT NULL,
+    seller_id  BIGINT       NOT NULL,
     author_id  BIGINT,
-
-    -- must always point to a seller
-    seller_id  BIGINT    NOT NULL,
-
-    created_at TIMESTAMP NOT NULL,
-
-    CONSTRAINT fk_comment_author
-        FOREIGN KEY (author_id) REFERENCES users (id)
-            ON DELETE SET NULL,
-
-    CONSTRAINT fk_comment_seller
-        FOREIGN KEY (seller_id) REFERENCES users (id)
-            ON DELETE CASCADE
+    CONSTRAINT fk_comment_seller FOREIGN KEY (seller_id) REFERENCES users (id),
+    CONSTRAINT fk_comment_author FOREIGN KEY (author_id) REFERENCES users (id)
 );
+
 
 CREATE TABLE games
 (
@@ -45,12 +35,12 @@ CREATE TABLE games
 CREATE TABLE game_objects
 (
     id IDENTITY PRIMARY KEY,
-    title       VARCHAR(255) NOT NULL,
-    text        CLOB         NOT NULL,
-    user_id     BIGINT       NOT NULL,
-    game_id     BIGINT       NOT NULL,
-    created_at  TIMESTAMP    NOT NULL,
-    updated_at  TIMESTAMP    NOT NULL,
+    title      VARCHAR(255) NOT NULL,
+    text       CLOB         NOT NULL,
+    user_id    BIGINT       NOT NULL,
+    game_id    BIGINT       NOT NULL,
+    created_at TIMESTAMP    NOT NULL,
+    updated_at TIMESTAMP    NOT NULL,
 
     CONSTRAINT fk_game_object_author
         FOREIGN KEY (user_id) REFERENCES users (id)

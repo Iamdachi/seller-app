@@ -3,7 +3,7 @@ Phases:
 - DB design + migrations: 6h
 - Auth (register/confirm/login): 10h
 - Seller CRUD + admin approval: 10h
-- Comment CRUD + verification workflow: 12h
+- Comment CRUD + verification workflo`w: 12h
 - Rating calc & top sellers: 8h
 - Games/objects CRUD + filters: 8h
 - Security & roles: 6h

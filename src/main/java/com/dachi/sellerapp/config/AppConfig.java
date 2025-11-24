@@ -1,10 +1,14 @@
 package com.dachi.sellerapp.config;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -13,6 +17,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = "com.dachi.sellerapp")
@@ -30,27 +36,35 @@ public class AppConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setDataSource(dataSource());
-        emf.setPackagesToScan("com.dachi.sellerapp.model");
-        emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        emf.setDataSource(ds);
+        emf.setPackagesToScan("com.dachi.sellerapp");
 
-        // ⭐ ADD THESE PROPERTIES ⭐
-        var props = new java.util.Properties();
-        props.put("hibernate.hbm2ddl.auto", "update");  // or create-drop
-        props.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        HibernateJpaVendorAdapter vendor = new HibernateJpaVendorAdapter();
+        emf.setJpaVendorAdapter(vendor);
+
+        Properties props = new Properties();
+        props.put("hibernate.hbm2ddl.auto", "none");
+        props.put("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
         props.put("hibernate.show_sql", "true");
         props.put("hibernate.format_sql", "true");
+        props.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 
         emf.setJpaProperties(props);
-
         return emf;
     }
-
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
     }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+
 }

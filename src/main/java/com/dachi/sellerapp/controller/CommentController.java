@@ -22,11 +22,15 @@ public class CommentController {
      * Submit a new comment for a seller (author may be anonymous).
      */
     @PostMapping
-    public CommentDTO addComment(@PathVariable Long sellerId,
-                                 @RequestBody Map<String, String> body) {
-        Long authorId = body.containsKey("authorId") ? Long.valueOf(body.get("authorId")) : null;
-        String message = body.get("message");
-        int rating = Integer.parseInt(body.get("rating"));
+    public CommentDTO addComment(
+            @PathVariable("sellerId") Long sellerId,
+            @RequestBody CommentDTO commentDTO
+    ) {
+        // Extract fields from DTO
+        Long authorId = commentDTO.authorId(); // can be null
+        String message = commentDTO.message();
+        int rating = commentDTO.rating();
+
         return commentService.addComment(sellerId, authorId, message, rating);
     }
 

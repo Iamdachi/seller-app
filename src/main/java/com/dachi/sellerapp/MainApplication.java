@@ -9,7 +9,7 @@ import java.io.File;
 public class MainApplication {
     public static void main(String[] args) throws Exception {
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(9090); // bind port
+        tomcat.setPort(8080); // bind port
         // tomcat.setHostname("127.0.0.1"); // remove this line
 
         WebAppInitializer initializer = new WebAppInitializer();
