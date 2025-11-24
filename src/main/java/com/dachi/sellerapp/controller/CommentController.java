@@ -17,7 +17,10 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // POST /users/:id/comments
+    /**
+     * POST /users/{sellerId}/comments
+     * Submit a new comment for a seller (author may be anonymous).
+     */
     @PostMapping
     public CommentDTO addComment(@PathVariable Long sellerId,
                                  @RequestBody Map<String, String> body) {
@@ -27,20 +30,29 @@ public class CommentController {
         return commentService.addComment(sellerId, authorId, message, rating);
     }
 
-    // GET /users/:id/comments
+    /**
+     * GET /users/{sellerId}/comments
+     * Retrieve all comments for a seller.
+     */
     @GetMapping
     public List<CommentDTO> getComments(@PathVariable Long sellerId) {
         return commentService.getSellerComments(sellerId);
     }
 
-    // GET /users/:id/comments/:id
+    /**
+     * GET /users/{sellerId}/comments/{commentId}
+     * Retrieve a specific comment.
+     */
     @GetMapping("/{commentId}")
     public CommentDTO getComment(@PathVariable Long sellerId,
                                  @PathVariable Long commentId) {
         return commentService.getComment(sellerId, commentId);
     }
 
-    // PUT /users/:id/comments
+    /**
+     * PUT /users/{sellerId}/comments
+     * Update an existing comment (only author can update).
+     */
     @PutMapping
     public CommentDTO updateComment(@RequestBody Map<String, String> body) {
         Long commentId = Long.valueOf(body.get("commentId"));
@@ -51,7 +63,10 @@ public class CommentController {
         return commentService.updateComment(commentId, authorId, message, rating);
     }
 
-    // DELETE /users/:id/comments/:id
+    /**
+     * DELETE /users/{sellerId}/comments/{commentId}
+     * Delete a comment (only author can delete).
+     */
     @DeleteMapping("/{commentId}")
     public String deleteComment(@PathVariable Long sellerId,
                                 @PathVariable Long commentId,

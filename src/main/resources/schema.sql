@@ -35,19 +35,29 @@ CREATE TABLE comments
             ON DELETE CASCADE
 );
 
+CREATE TABLE games
+(
+    id IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
 
 
 CREATE TABLE game_objects
 (
     id IDENTITY PRIMARY KEY,
-    title      VARCHAR(255) NOT NULL,
-    text       CLOB         NOT NULL,
-    user_id    BIGINT       NOT NULL,
-    created_at TIMESTAMP    NOT NULL,
-    updated_at TIMESTAMP    NOT NULL,
+    title       VARCHAR(255) NOT NULL,
+    text        CLOB         NOT NULL,
+    user_id     BIGINT       NOT NULL,
+    game_id     BIGINT       NOT NULL,
+    created_at  TIMESTAMP    NOT NULL,
+    updated_at  TIMESTAMP    NOT NULL,
 
     CONSTRAINT fk_game_object_author
         FOREIGN KEY (user_id) REFERENCES users (id)
+            ON DELETE CASCADE,
+
+    CONSTRAINT fk_game_object_game
+        FOREIGN KEY (game_id) REFERENCES games (id)
             ON DELETE CASCADE
 );
 

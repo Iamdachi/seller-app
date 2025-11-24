@@ -3,4 +3,8 @@ package com.dachi.sellerapp.repository;
 import com.dachi.sellerapp.model.GameObject;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GameObjectRepository extends JpaRepository<GameObject, Long> {}
+import java.util.List;
+
+public interface GameObjectRepository extends JpaRepository<GameObject, Long> {
+    List<GameObject> findByGameId(Long gameId);
+}

@@ -2,8 +2,10 @@ package com.dachi.sellerapp.service;
 
 import com.dachi.sellerapp.dto.GameObjectDTO;
 import com.dachi.sellerapp.model.GameObject;
+import com.dachi.sellerapp.model.SellerRating;
 import com.dachi.sellerapp.model.User;
 import com.dachi.sellerapp.repository.GameObjectRepository;
+import com.dachi.sellerapp.repository.SellerRatingRepository;
 import com.dachi.sellerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,12 @@ public class GameObjectService {
 
     private final GameObjectRepository gameObjectRepo;
     private final UserRepository userRepo;
+    private final SellerRatingRepository sellerRatingRepo;
 
-    public GameObjectService(GameObjectRepository gameObjectRepo, UserRepository userRepo) {
+    public GameObjectService(GameObjectRepository gameObjectRepo, UserRepository userRepo, SellerRatingRepository sellerRatingRepo) {
         this.gameObjectRepo = gameObjectRepo;
         this.userRepo = userRepo;
+        this.sellerRatingRepo = sellerRatingRepo;
     }
 
     // Convert entity -> DTO
@@ -76,4 +80,25 @@ public class GameObjectService {
 
         gameObjectRepo.delete(obj);
     }
+
+    public List<GameObject> filterByGame(Long gameId) {
+        return gameObjectRepo.findByGameId(gameId);
+    }
+
+    public List<GameObject> filterByGameAndRating(Long gameId, int minRating, int maxRating) {
+        List<GameObject> objects = gameObjectRepo.findByGameId(gameId);
+
+        return objects.stream()
+                .filter(obj -> {
+                    SellerRating rating = sellerRatingRepo.findById(obj.getUser().getId()).orElse(null);
+
+                    if (rating == null) return false;
+
+                    double avg = rating.getAvgRating();
+
+                    return avg >= minRating && avg <= maxRating;
+                })
+                .collect(Collectors.toList());
+    }
+
 }

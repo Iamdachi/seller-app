@@ -14,6 +14,10 @@ public class GameObject {
     @Column(nullable = false)
     private String title;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "game_id")
+    private Game game;
+
     @Lob
     @Column(nullable = false)
     private String text;
@@ -55,4 +59,19 @@ public class GameObject {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+
+
+
+
+
+
 }
